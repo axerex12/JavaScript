@@ -28,17 +28,12 @@ const todoList = [
 ];
 
 // add your code here
-const html = `<li>
-<input type="checkbox" id="todo-1" checked>
-<label for="todo-1">Buy milk</label>
-</li>
-<li>
-<input type="checkbox" id="todo-2">
-<label for="todo-2">Buy eggs</label>
-</li>
-<li>
-<input type="checkbox" id="todo-3" >
-<label for="todo-3">Buy bread</label>
-</li>`
-const targetElement = document.querySelector('#subject');
-targetElement.insertAdjacentHTML('beforeend',html);
+for (let i = 0; i < todoList.length; i++) {
+  const todo = todoList[i];
+  const html = `<li>
+    <input type="checkbox" id="todo-${todo.id}" ${todo.completed ? 'checked' : ''}>
+    <label for="todo-${todo.id}">${todo.task}</label>
+  </li>`;
+  const targetElement = document.querySelector('#subject');
+  targetElement.insertAdjacentHTML('beforeend', html);
+}
