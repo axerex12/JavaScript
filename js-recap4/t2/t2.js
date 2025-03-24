@@ -769,51 +769,43 @@ const restaurants = [
     __v: 0,
   },
 ];
-function distance(alkupiste, loppupiste) {
-  return Math.sqrt(
-    (loppupiste[0] - alkupiste[0]) ** 2 + (loppupiste[1] - alkupiste[1]) ** 2
-  );
-}
-
 const taulukko = document.querySelector('#target');
+const modal = document.querySelector('#modal');
 
-const option = {
-  enableHighAccuracy: true,
-  timeout: 5000,
-  maximumAge: 0,
-};
+let edellinenHighlight;
 
-function success(pos) {
-  const crd = pos.coords;
-  console.log(crd);
-  const alkupiste = [crd.longitude, crd.latitude];
-  restaurants.sort((a, b) => {
-    return (
-      distance(alkupiste, a.location.coordinates) -
-      distance(alkupiste, b.location.coordinates)
-    );
+//aakkos järjestykseen
+restaurants.sort(function (a, b) {
+  return a.name.toUpperCase() > b.name.toUpperCase() ? 1 : -1;
+});
+
+for (const restaurant of restaurants) {
+  //rivi
+  const tr = document.createElement('tr');
+  tr.addEventListener('click', function () {
+    for (const elem of document.querySelectorAll('.highlight')) {
+      elem.classList.remove('highlight')
+      }
+    tr.classList.add('highlight');
+    edellinenHighlight = tr;
+    modal.innerHTML = '';
+    modal.showModal();
+    const nameP = document.createElement('h3');
+    nameP.innerText = restaurant.name;
+
+    modal.append(nameP);
   });
-  console.log(restaurants);
-  for (const restaurant of restaurants) {
-    //rivi
-    const tr = document.createElement('tr');
-    //nimisolu
-    const nameTd = document.createElement('td');
-    nameTd.innerText = restaurant.name;
-    //osoitesolu
-    const addressTd = document.createElement('td');
-    addressTd.innerText = restaurant.address;
-    //kaupunki soluh
-    const cityTd = document.createElement('td');
-    cityTd.innerText = restaurant.city;
-    //lisätään solut riviin
-    tr.append(nameTd, addressTd);
-    taulukko.append(tr);
-  }
-}
 
-function error(err) {
-  console.warn(`ERROR(${err.code}): ${err.message}`);
+  //nimisolu
+  const nameTd = document.createElement('td');
+  nameTd.innerText = restaurant.name;
+  //osoitesolu
+  const addressTd = document.createElement('td');
+  addressTd.innerText = restaurant.address;
+  //kaupunki soluh
+  const cityTd = document.createElement('td');
+  cityTd.innerText = restaurant.city;
+  //lisätään solut riviin
+  tr.append(nameTd, addressTd);
+  taulukko.append(tr);
 }
-
-navigator.geolocation.getCurrentPosition(success, error, option);
