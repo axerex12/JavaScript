@@ -17,5 +17,15 @@ newP = document.createElement('p');
 newP.textContent = screenHeightAndWidth;
 bodyElement.appendChild(newP);
 
+const availScreenHeightAndWidth = window.screen.availWidth + 'x' + window.screen.availHeight;
+newP = document.createElement('p');
+newP.textContent = 'Available screen space: ' + availScreenHeightAndWidth;
+bodyElement.appendChild(newP);
+
+const currentDate = new Date().toLocaleString('fi-FI');
+newP = document.createElement('p');
+newP.textContent = 'Current date and time: ' + currentDate;
+bodyElement.appendChild(newP);
+
 
 
