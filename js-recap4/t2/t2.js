@@ -784,8 +784,8 @@ for (const restaurant of restaurants) {
   const tr = document.createElement('tr');
   tr.addEventListener('click', function () {
     for (const elem of document.querySelectorAll('.highlight')) {
-      elem.classList.remove('highlight')
-      }
+      elem.classList.remove('highlight');
+    }
     tr.classList.add('highlight');
     edellinenHighlight = tr;
     modal.innerHTML = '';
@@ -793,7 +793,31 @@ for (const restaurant of restaurants) {
     const nameP = document.createElement('h3');
     nameP.innerText = restaurant.name;
 
+    const addressP = document.createElement('p');
+    addressP.innerText = restaurant.address;
+
+    const postalCodeP = document.createElement('p');
+    postalCodeP.innerText = restaurant.postalCode;
+
+    const cityP = document.createElement('p');
+    cityP.innerText = restaurant.city;
+
+    const numberP = document.createElement('p');
+    if (restaurant.phone == '-') {
+      numberP.innerText = 'Ei puhelinnumeroa';
+    } else {
+      numberP.innerText = restaurant.phone;
+    }
+
+    const companyP = document.createElement('p');
+    companyP.innerText = restaurant.company;
+
     modal.append(nameP);
+    modal.append(addressP);
+    modal.append(postalCodeP);
+    modal.append(cityP);
+    modal.append(numberP);
+    modal.append(companyP);
   });
 
   //nimisolu
