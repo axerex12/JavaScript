@@ -38,11 +38,16 @@ const sortRestaurants = () => {
 // Creates the table of restaurants
 const createTable = (restaurantsToShow = restaurants) => {
   // Clear the table first
-  table.innerHTML = '';
+  table.innerHTML = `<tr>
+    <th>Name</th>
+    <th>Address</th>
+  </tr>
+  `;
 
   restaurantsToShow.forEach(restaurant => {
     const {_id} = restaurant;
     const tr = restaurantRow(restaurant);
+    table.append(tr);
 
     tr.addEventListener('click', async () => {
       try {
