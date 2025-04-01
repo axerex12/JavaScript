@@ -2,9 +2,9 @@ import {baseUrl} from './variables.js';
 import {fetchData} from './utils.js';
 import {restaurantRow, restaurantModal} from './components.js';
 
-const taulukko = document.querySelector('#target');
+const table = document.querySelector('#target');
 const modal = document.querySelector('#modal');
-const sodexoButton = document.getElementById('sodexoB')
+const sodexoButton = document.getElementById('sodexoB');
 const compassButton = document.getElementById('compassB');
 let currentFilter = null;
 let restaurants = [];
@@ -15,6 +15,7 @@ const getDailyMenu = async (id, lang) => {
     return await fetchData(`${baseUrl}/restaurants/daily/${id}/${lang}`);
   } catch (error) {
     console.error('An error occurred:', error);
+    return null;
   }
 };
 
@@ -30,25 +31,25 @@ const getRestaurants = async () => {
 // Sorts restaurants alphabetically by name
 const sortRestaurants = () => {
   restaurants.sort(({name: nameA}, {name: nameB}) =>
-    nameA.toUpperCase() > nameB.toUpperCase() ? 1 : -1
+    nameA.toUpperCase().localeCompare(nameB.toUpperCase())
   );
 };
 
 // Creates the table of restaurants
 const createTable = (restaurantsToShow = restaurants) => {
   // Clear the table first
-  taulukko.innerHTML = '';
+  table.innerHTML = '';
 
-  for (const restaurant of restaurantsToShow) {
+  restaurantsToShow.forEach(restaurant => {
     const {_id} = restaurant;
     const tr = restaurantRow(restaurant);
 
-    tr.addEventListener('click', async function () {
+    tr.addEventListener('click', async () => {
       try {
-        // Remove existing highlights
-        for (const elem of document.querySelectorAll('.highlight')) {
+        // Remove existing highlights using forEach
+        document.querySelectorAll('.highlight').forEach(elem => {
           elem.classList.remove('highlight');
-        }
+        });
         tr.classList.add('highlight');
 
         // Fetch and display the daily menu
@@ -60,45 +61,43 @@ const createTable = (restaurantsToShow = restaurants) => {
       }
     });
 
-    taulukko.append(tr);
+    table.append(tr);
+  });
+};
+
+// Helper function to handle filter button clicks
+const handleFilterClick = (company, filterName) => {
+  if (currentFilter === filterName) {
+    // If filter is already active, remove it
+    currentFilter = null;
+    sodexoButton.classList.remove('active');
+    compassButton.classList.remove('active');
+    createTable();
+  } else {
+    // Apply the filter
+    currentFilter = filterName;
+    const buttons = {sodexo: sodexoButton, compass: compassButton};
+    Object.values(buttons).forEach(btn => btn.classList.remove('active'));
+    buttons[filterName].classList.add('active');
+
+    const filtered = restaurants.filter(r =>
+      r.company.toLowerCase() === company.toLowerCase()
+    );
+    createTable(filtered);
   }
 };
 
 // Event listeners for the buttons
-sodexoButton.addEventListener('click', () => {
-  if (currentFilter === 'sodexo') {
-    // If Sodexo is already active, remove filter
-    currentFilter = null;
-    sodexoButton.classList.remove('active');
-    createTable(restaurants);
-  } else {
-    // Apply Sodexo filter
-    currentFilter = 'sodexo';
-    sodexoButton.classList.add('active');
-    compassButton.classList.remove('active');
-    const filtered = restaurants.filter(r => r.company.toLowerCase() === 'sodexo');
-    createTable(filtered);
-  }
-});
+sodexoButton.addEventListener('click', () =>
+  handleFilterClick('sodexo', 'sodexo')
+);
 
-compassButton.addEventListener('click', () => {
-  if (currentFilter === 'compass')  {
-    // If Compass is already active, remove filter
-    currentFilter = null;
-    compassButton.classList.remove('active');
-    createTable(restaurants);
-  } else {
-    // Apply Compass filter
-    currentFilter = 'compass';
-    compassButton.classList.add('active');
-    sodexoButton.classList.remove('active');
-    const filtered = restaurants.filter(r => r.company.toLowerCase() === 'compass group');
-    createTable(filtered);
-  }
-});
+compassButton.addEventListener('click', () =>
+  handleFilterClick('compass group', 'compass')
+);
 
 // Main function to initialize the app
-async function main() {
+const main = async () => {
   try {
     await getRestaurants();
     sortRestaurants();
@@ -106,6 +105,6 @@ async function main() {
   } catch (error) {
     console.error('An error occurred:', error);
   }
-}
+};
 
 main();
