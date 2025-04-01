@@ -29,3 +29,8 @@ td {
   font-weight: bold;
   background-color: chartreuse;
 }
+
+button.active {
+  background-color: #4CAF50;
+  color: white;
+}

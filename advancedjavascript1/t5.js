@@ -4,6 +4,9 @@ import {restaurantRow, restaurantModal} from './components.js';
 
 const taulukko = document.querySelector('#target');
 const modal = document.querySelector('#modal');
+const sodexoButton = document.getElementById('sodexoB')
+const compassButton = document.getElementById('compassB');
+let currentFilter = null;
 let restaurants = [];
 
 // Fetches the daily menu for a restaurant
@@ -32,8 +35,11 @@ const sortRestaurants = () => {
 };
 
 // Creates the table of restaurants
-const createTable = () => {
-  for (const restaurant of restaurants) {
+const createTable = (restaurantsToShow = restaurants) => {
+  // Clear the table first
+  taulukko.innerHTML = '';
+
+  for (const restaurant of restaurantsToShow) {
     const {_id} = restaurant;
     const tr = restaurantRow(restaurant);
 
@@ -57,6 +63,39 @@ const createTable = () => {
     taulukko.append(tr);
   }
 };
+
+// Event listeners for the buttons
+sodexoButton.addEventListener('click', () => {
+  if (currentFilter === 'sodexo') {
+    // If Sodexo is already active, remove filter
+    currentFilter = null;
+    sodexoButton.classList.remove('active');
+    createTable(restaurants);
+  } else {
+    // Apply Sodexo filter
+    currentFilter = 'sodexo';
+    sodexoButton.classList.add('active');
+    compassButton.classList.remove('active');
+    const filtered = restaurants.filter(r => r.company.toLowerCase() === 'sodexo');
+    createTable(filtered);
+  }
+});
+
+compassButton.addEventListener('click', () => {
+  if (currentFilter === 'compass')  {
+    // If Compass is already active, remove filter
+    currentFilter = null;
+    compassButton.classList.remove('active');
+    createTable(restaurants);
+  } else {
+    // Apply Compass filter
+    currentFilter = 'compass';
+    compassButton.classList.add('active');
+    sodexoButton.classList.remove('active');
+    const filtered = restaurants.filter(r => r.company.toLowerCase() === 'compass');
+    createTable(filtered);
+  }
+});
 
 // Main function to initialize the app
 async function main() {
