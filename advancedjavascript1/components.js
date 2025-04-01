@@ -1,45 +1,30 @@
-export const restaurantRow = ({ name, company }) => {
-  // Create a new table row element
-  const tr = document.createElement('tr');
 
+export const restaurantRow = ({ name, company }) => {
+  const tr = document.createElement('tr');
   tr.innerHTML = `
     <td>${name}</td>
     <td>${company}</td>
   `;
-
   return tr;
 };
 
-export const restaurantModal = ({ name, address, postalCode }, { courses }) => {
-  // Generate the restaurant details HTML
-  const restaurantDetails = `
-    <h3>${name}</h3>
-    <p>${address}</p>
-    <p>${postalCode}</p>
-  `;
 
-  // Generate the menu items HTML
-  let menuHtml = '';
-  courses.forEach((course) => {
-    menuHtml += `
-      <article class="course">
-        <p><strong>${course.name}</strong></p>
-        <p>Hinta: ${course.price}</p>
-        <p>Ruokavaliot: ${course.diets}</p>
-      </article>
-    `;
+export const restaurantModal = (restaurant, menu) => {
+  const { name, address, postalCode, city, phone, company } = restaurant;
+  const { courses } = menu;
+
+  let menuHtml = '<ul>';
+  courses.forEach(({ name, price, diets }) => {
+    menuHtml += `<li>${name}, ${price || '?€'}. ${diets}</li>`;
   });
+  menuHtml += '</ul>';
 
-  // Combine restaurant details and menu HTML
-  const completeHtml = `
-    <section>
-      ${restaurantDetails}
-      <div class="menu">
-        ${menuHtml}
-      </div>
-    </section>
+  return `
+    <h1>${name}</h1>
+    <p>${address}</p>
+    <p>${postalCode}, ${city}</p>
+    <p>${phone}</p>
+    <p>${company}</p>
+    ${menuHtml}
   `;
-
-  // Return the complete HTML content
-  return completeHtml;
 };
