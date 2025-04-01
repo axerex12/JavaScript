@@ -92,7 +92,7 @@ compassButton.addEventListener('click', () => {
     currentFilter = 'compass';
     compassButton.classList.add('active');
     sodexoButton.classList.remove('active');
-    const filtered = restaurants.filter(r => r.company.toLowerCase() === 'compass');
+    const filtered = restaurants.filter(r => r.company.toLowerCase() === 'compass group');
     createTable(filtered);
   }
 });
